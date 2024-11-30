@@ -9,7 +9,7 @@ export const ListView = () => {
   const [state, setState] = React.useState(State.All);
   const [selectedLabels, setSelectedLabels] = React.useState<string[]>([]);
 
-  const { issuesQuery } = useIssues({
+  const { issuesQuery, page, nextPage, previusPage } = useIssues({
     state,
     selectedLabels,
   });
@@ -32,7 +32,25 @@ export const ListView = () => {
         {issuesQuery.isLoading ? (
           <LoadingSpinner />
         ) : (
-          <IssueList issues={issues} onStateChange={setState} state={state} />
+          <>
+            <IssueList issues={issues} onStateChange={setState} state={state} />
+
+            <div className="flex justify-between items-center">
+              <button
+                onClick={previusPage}
+                className="p-2 bg-blue-500 rounded-md hover:bg-blue-700 transition-all"
+              >
+                Preview
+              </button>
+              <span>{page}</span>
+              <button
+                onClick={nextPage}
+                className="p-2 bg-blue-500 rounded-md hover:bg-blue-700 transition-all"
+              >
+                Next
+              </button>
+            </div>
+          </>
         )}
       </div>
 
