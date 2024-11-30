@@ -7,12 +7,24 @@ import { State } from '../interfaces';
 
 export const ListView = () => {
   const [state, setState] = React.useState(State.All);
+  const [selectedLabels, setSelectedLabels] = React.useState<string[]>([]);
 
   const { issuesQuery } = useIssues({
     state,
+    selectedLabels,
   });
 
   const issues = issuesQuery.data ?? [];
+
+  const onLabelSelected = (label: string) => {
+    if (selectedLabels.includes(label)) {
+      setSelectedLabels(
+        selectedLabels.filter((selectedLabels) => selectedLabels !== label)
+      );
+    } else {
+      setSelectedLabels([...selectedLabels, label]);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 mt-5">
@@ -20,12 +32,15 @@ export const ListView = () => {
         {issuesQuery.isLoading ? (
           <LoadingSpinner />
         ) : (
-          <IssueList issues={issues} onStateChange={setState} state={state}/>
+          <IssueList issues={issues} onStateChange={setState} state={state} />
         )}
       </div>
 
       <div className="col-span-1 px-2">
-        <LabelPicker />
+        <LabelPicker
+          selectedLabels={selectedLabels}
+          onLabelSelected={onLabelSelected}
+        />
       </div>
     </div>
   );
