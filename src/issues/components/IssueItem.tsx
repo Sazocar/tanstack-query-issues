@@ -3,6 +3,7 @@ import { GithubIssue, State } from '../interfaces';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { getIssue, getIssueComments } from '../actions';
+import { timeSince } from '../../helpers';
 
 interface IssueItemProps {
   issue: GithubIssue;
@@ -28,8 +29,6 @@ export const IssueItem = ({ issue }: IssueItemProps) => {
       queryFn: () => getIssueComments(issue.number),
       staleTime: 1000 * 60,
     });
-
-    
   };
 
   return (
@@ -51,10 +50,21 @@ export const IssueItem = ({ issue }: IssueItemProps) => {
           {title}
         </a>
         <span className="text-gray-500">
-          {/* TODO: days ago */}
-          {`#${number} opened 2 days ago by`}
+          {`#${number} opened ${timeSince(issue.created_at)} ago by`}
           <span className="font-bold">{user.login}</span>
         </span>
+
+        <div className="flex flex-wrap">
+          {issue?.labels?.map((label) => (
+            <span
+              key={label.id}
+              className="mr-2 px-2 py-1 text-xs text-white rounded-md"
+              style={{ border: `1px solid #${label.color}` }}
+            >
+              {label.name}
+            </span>
+          ))}
+        </div>
       </div>
 
       <img
